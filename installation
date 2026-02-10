@@ -65,12 +65,18 @@ openssl x509 -req -in minio.csr \
 
 
 
-mkdir -p /opt/minio/certs
-chown -R minio-user:minio-user /opt/minio/certs
+sudo mkdir -p /opt/minio/certs
+cp private.key /opt/minio/certs
+cp public.crt /opt/minio/certs
+cp ca.crt /opt/minio/certs/CAs
+
+sudo chown -R minio-user:minio-user /opt/minio/certs
 
 cp private.key /opt/minio/certs
 cp public.crt /opt/minio/certs
-cp ca.crt /etc/minio/certs/CAs/ca.crt
+cp ca.crt /opt/minio/certs/CAs
+
+
 
 vim /etc/default/minio
 # Set the hosts and volumes MinIO uses at startup
