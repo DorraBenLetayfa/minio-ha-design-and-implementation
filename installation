@@ -1,0 +1,115 @@
+mkfs.xfs /dev/sda
+mkfs.xfs /dev/sdb
+
+mkdir -p /mnt/disk1 /mnt/disk2
+mount /dev/sda /mnt/disk1
+mount /dev/sdb /mnt/disk2
+
+lsblk -f (get UUID)
+
+UUID=8e8265ac-db63-449b-b6ea-24b8c490d147 /mnt/disk1 xfs defaults,noatime 0 0
+UUID=3542a55a-fc60-46f0-a5a3-2a44bf538dbc /mnt/disk2 xfs defaults,noatime 0 0 
+
+mount -a 
+df -h | grep /mnt
+
+curl --progress-bar -L dl.min.io/aistor/minio/release/linux-amd64/minio.rpm -o minio.rpm
+sudo dnf install minio.rpm
+minio --version
+sudo systemctl status minio
+
+groupadd -r minio-user
+useradd -M -r -g minio-user minio-user
+
+chown -R minio-user:minio-user /mnt/drives-{1...16}
+
+#certgen -host "localhost,minio-*.example.net"
+
+openssl genrsa -out ca.key 4096
+
+openssl req -x509 -new -nodes -key ca.key \
+  -sha256 -days 3650 \
+  -subj "/C=AE/O=Smartek/OU=IT/CN=Smartek-CA" \
+  -out ca.crt
+
+openssl genrsa -out private.key 2048
+
+cat > minio.cnf <<EOF
+[ req ]
+default_bits = 2048
+prompt = no
+default_md = sha256
+req_extensions = req_ext
+distinguished_name = dn
+
+[ dn ]
+C=AE
+O=Smartek
+CN=minio.smartek.ae
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = minio.smartek.ae
+DNS.2 = minio
+IP.1  = 192.168.1.10
+EOF
+
+openssl req -new -key private.key -out minio.csr -config minio.cnf
+openssl x509 -req -in minio.csr \
+  -CA ca.crt -CAkey ca.key -CAcreateserial \
+  -out public.crt -days 825 -sha256 \
+  -extensions req_ext -extfile minio.cnf
+
+
+
+
+mkdir -p /opt/minio/certs
+chown -R minio-user:minio-user /opt/minio/certs
+
+cp private.key /opt/minio/certs
+cp public.crt /opt/minio/certs
+cp ca.crt /etc/minio/certs/CAs/ca.crt
+
+vim /etc/default/minio
+# Set the hosts and volumes MinIO uses at startup
+# The command uses MinIO expansion notation {x...y} to denote a
+# sequential series.
+#
+# The following example covers four MinIO hosts
+# with 4 drives each at the specified hostname and drive locations.
+#
+# The command includes the port that each MinIO server listens on
+# (default 9000).
+# If you run without TLS, change https -> http
+
+MINIO_VOLUMES="https://minio{1...4}.example.net:9000/mnt/disk{1...4}/minio"
+
+# Set all MinIO server command-line options
+#
+# The following explicitly sets the MinIO Console listen address to
+# port 9001 on all network interfaces.
+# The default behavior is dynamic port selection.
+
+MINIO_OPTS="--console-address :9001 --certs-dir /opt/minio/certs"
+
+# Set the root username.
+# This user has unrestricted permissions to perform S3 and
+# administrative API operations on any resource in the deployment.
+#
+# Defer to your organizations requirements for superadmin user name.
+
+MINIO_ROOT_USER=minioadmin
+
+# Set the root password
+#
+# Use a long, random, unique string that meets your organizations
+# requirements for passwords.
+
+MINIO_ROOT_PASSWORD=minio-secret-key-CHANGE-ME
+
+
+sudo systemctl start minio
+
+https://minio1.example.com:9001

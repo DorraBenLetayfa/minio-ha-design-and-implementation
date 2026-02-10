@@ -1,0 +1,26 @@
+4 nodes (production)
+OS: RHEL 10 
+kernel 6.12
+Processor: x64
+CPU: Single Socket with ≥64 cores and ≥128 PCIe lanes
+Disks: 30.72TB / 61.44 TB / 122.88 TB NVMe 4.0 or 5.0 drives
+Drives: NVMe Flash/PCIe Gen 4.0/30 TB or higher
+Network: Single/Dual / 100 GbE or higher
+Memory: 256 GB RAM or higher
+Filesystem: XFS 
+
+
+(for testing)
+RAM: 16GB x 4
+CPU: 8
+Disks: 100GB x 4 x 4
+Filesystem: XFS 
+
+
+1 Load Balancer
+
+
+
+
+#https://docs.min.io/enterprise/aistor-object-store/installation/linux/install/
+#https://docs.min.io/enterprise/aistor-object-store/reference/aistor-server/requirements/

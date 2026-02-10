@@ -1,0 +1,6 @@
+1 - Define Requirements for machines
+2 - Provision 1 machine with 3 disks
+3 - Install minio and make sure that it works 
+4 - Clone the machine to create 3 more machines
+5 - Configure Load balancing 
+6 - Enable Network Encryption TLS
