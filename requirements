@@ -1,4 +1,4 @@
-4 nodes (production)
+nodes (production)
 OS: RHEL 10 
 kernel 6.12
 Processor: x64
@@ -8,18 +8,26 @@ Drives: NVMe Flash/PCIe Gen 4.0/30 TB or higher
 Network: Single/Dual / 100 GbE or higher
 Memory: 256 GB RAM or higher
 Filesystem: XFS 
+latency: 
+...... 
 
 
 (for testing)
 RAM: 16GB x 4
 CPU: 8
-Disks: 100GB x 4 x 4
+Disks: 80GB x 4 x 4
 Filesystem: XFS 
-
+wget https://dl.min.io/server/minio/release/linux-amd64/minio
+sudo mv minio /usr/local/bin/
+chmod +x usr/local/bin/minio
+minio --version (you should not see AIStore in license)
 
 1 Load Balancer
 
-
+security check: 
+software check: https://docs.min.io/enterprise/aistor-object-store/installation/checklists/software/
+    kernel 6.8 or later + RHEL 10 
+    configure NTP 
 
 
 #https://docs.min.io/enterprise/aistor-object-store/installation/linux/install/

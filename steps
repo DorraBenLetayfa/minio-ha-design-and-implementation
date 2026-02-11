@@ -1,6 +1,16 @@
 1 - Define Requirements for machines
-2 - Provision 1 machine with 3 disks
+2 - Provision 1 machine with 2 disks
 3 - Install minio and make sure that it works 
 4 - Clone the machine to create 3 more machines
 5 - Configure Load balancing 
 6 - Enable Network Encryption TLS
+
+questions: 
+  can I add disks after installation without loosing my data? 
+  what is Multi-Site Active-Active Replication? is it required in prod? 
+  how to configure Load Balancing between 2 different Data Centers? 
+  what is a pool? 
+  post config steps? cache settings, Erasure Code Settings, Server Side Encryption Settings, ...
+  bucket vs site replication? needed? 
+  data recovery https://docs.min.io/enterprise/aistor-object-store/operations/failure-and-recovery/ 
+  

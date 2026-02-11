@@ -1,0 +1,48 @@
+make sure that disks have different UUID across the nodes
+sudo umount /mnt/disk1
+sudo umount /mnt/disk2
+sudo xfs_admin -U generate /dev/sda
+sudo xfs_admin -U generate /dev/sdc
+update /etc/fstab
+sudo mount -a
+
+if faced issue disk in part of another cluster : delete metadata of disks
+    sudo rm -rf /mnt/disk1/minio/.minio.sys
+    sudo rm -rf /mnt/disk2/minio/.minio.sys  
+
+start manually to see logs: run this on all nodes at same time 
+   sudo -u minio-user /usr/local/bin/minio server \
+http://minio1.smartek.ae/mnt/disk1/minio http://minio1.smartek.ae/mnt/disk2/minio \
+http://minio2.smartek.ae/mnt/disk1/minio http://minio2.smartek.ae/mnt/disk2/minio \
+http://minio3.smartek.ae/mnt/disk1/minio http://minio3.smartek.ae/mnt/disk2/minio \
+--address :9000 --console-address :9001
+
+
+if connection refused or host unreachable 
+test on all nodes: 
+ss -tulnp | grep 9000
+you should see *:9000
+curl http://minio2.smartek.ae:9000/minio/health/live
+curl http://minio3.smartek.ae:9000/minio/health/live
+curl http://minio1.smartek.ae:9000/minio/health/live
+
+
+
+   sudo -u minio-user /usr/local/bin/minio server \
+http://minio1.smartek.ae/mnt/disk1/minio http://minio1.smartek.ae/mnt/disk2/minio \
+http://minio2.smartek.ae/mnt/disk1/minio http://minio2.smartek.ae/mnt/disk2/minio \
+--address :9000 --console-address :9001
+
+
+sudo -u minio-user \
+MINIO_ROOT_USER=admin \
+MINIO_ROOT_PASSWORD=minioadmin \
+/usr/local/bin/minio server \
+http://minio1.smartek.ae/mnt/disk1/minio \
+http://minio1.smartek.ae/mnt/disk2/minio \
+http://minio2.smartek.ae/mnt/disk1/minio \
+http://minio2.smartek.ae/mnt/disk2/minio \
+http://minio3.smartek.ae/mnt/disk1/minio \
+http://minio3.smartek.ae/mnt/disk2/minio \
+--address 0.0.0.0:9000 \
+--console-address 0.0.0.0:9001
