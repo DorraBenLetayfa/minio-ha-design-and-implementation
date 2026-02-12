@@ -45,4 +45,26 @@ http://minio2.smartek.ae/mnt/disk2/minio \
 http://minio3.smartek.ae/mnt/disk1/minio \
 http://minio3.smartek.ae/mnt/disk2/minio \
 --address 0.0.0.0:9000 \
+--console-address 0.0.0.0:9001 & (add & to run in background and see logs in terminal)
+
+
+
+sudo -u minio-user \
+MINIO_ROOT_USER=admin \
+MINIO_ROOT_PASSWORD=minioadmin \
+/usr/local/bin/minio server \
+http://minio3.smartek.ae/mnt/disk1/minio \
+http://minio3.smartek.ae/mnt/disk2/minio \
+--address 0.0.0.0:9000 \
 --console-address 0.0.0.0:9001
+
+install mc 
+wget https://dl.min.io/client/mc/release/linux-amd64/mc
+chmod +x mc
+sudo mv mc /usr/local/bin/
+mc --version
+start the cluster and test with mc
+mc alias set cluster1 http://minio1.smartek.ae:9000 admin minioadmin
+mc admin info cluster1
+mc version enable cluster1/src
+mc version enable cluster2/dest

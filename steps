@@ -14,3 +14,12 @@ questions:
   bucket vs site replication? needed? 
   data recovery https://docs.min.io/enterprise/aistor-object-store/operations/failure-and-recovery/ 
   
+
+
+
+  start minio1 and minio2 as single cluster 
+  start minio3 as single cluster
+  configure LB
+  configure active active replication between the clusters
+  simulate crush of cluster1 and cluster and test load balancing
+

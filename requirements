@@ -32,3 +32,18 @@ software check: https://docs.min.io/enterprise/aistor-object-store/installation/
 
 #https://docs.min.io/enterprise/aistor-object-store/installation/linux/install/
 #https://docs.min.io/enterprise/aistor-object-store/reference/aistor-server/requirements/
+
+
+#--------------------------------------------------------------------------------------------------------------------------
+
+Architecture 
+
+Servers Requirements 
+
+Software Requirements 
+
+Security Requirements 
+
+Network Requirements 
+
+LoadBalancer 

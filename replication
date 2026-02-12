@@ -1,0 +1,18 @@
+https://docs.min.io/enterprise/aistor-object-store/administration/replication/#active-active-dual-site
+Active-active dual-site
+For two clusters that need the same set of data, use either site or bucket replication. Site replication automatically keeps both sites in sync with each other. Bucket replication allows you to specify which buckets to sync. For two way syncing with bucket replication, set up the replication on both sites back to the other.
+
+mc mb cluster1/src
+mc mb cluster2/dest
+
+mc version enable cluster1/src
+mc version enable cluster2/dest
+
+(works on entreprise only) 
+mc admin bucket remote add cluster1/src http://admin:minioadmin@minio3.smartek.ae:9000/dest --service “replication” --region “us-east-1”
+
+https://blog.min.io/minio-multi-site-active-active-replication/
+
+
+nohup mc mirror --watch cluster1/src cluster2/dest > ./mirror.log 2>&1 &
+nohup mc mirror --watch cluster2/dest cluster1/src > ./mirror.log 2>&1 &
