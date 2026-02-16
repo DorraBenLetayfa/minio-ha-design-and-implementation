@@ -1,0 +1,51 @@
+install haproxy
+sudo systemctl start haproxy
+sudo systemctl enable haproxy
+
+
+sudo vim /etc/haproxy/haproxy.cfg
+global
+    log /dev/log    local0
+    log /dev/log    local1 notice
+    maxconn 4096
+    user haproxy
+    group haproxy
+    daemon
+
+defaults
+    log     global
+    mode    tcp
+    option  tcplog
+    timeout connect 5000ms
+    timeout client  50000ms
+    timeout server  50000ms
+
+frontend minio_https
+    bind *:443 ssl crt /etc/haproxy/certs/minio.pem
+    mode tcp
+    option tcplog
+    default_backend minio_backend
+
+backend minio_backend
+    mode tcp
+    balance roundrobin
+    server minio1 minio1.smartek.ae:9000 check
+    server minio2 minio2.smartek.ae:9000 check
+#    server minio3 minio3.smartek.ae:9000 check
+
+frontend minio_console
+    bind *:9443 ssl crt /etc/haproxy/certs/minio.pem
+    mode tcp
+    default_backend minio_console_backend
+
+backend minio_console_backend
+    mode tcp
+    balance roundrobin
+    server minio1 minio1.smartek.ae:9001 check
+    server minio2 minio2.smartek.ae:9001 check
+ #   server minio3 minio3.smartek.ae:9001 check
+
+(this configuration needs a Global Load Balancer or smart DNS for health checks or it wont work as expected)
+(this configuration is not configured with multiple URLs as mentioned in the Doc.)
+========================================================================================================
+
