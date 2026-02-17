@@ -16,3 +16,4 @@ https://blog.min.io/minio-multi-site-active-active-replication/
 
 nohup mc mirror --watch cluster1/src cluster2/dest > ./mirror.log 2>&1 &
 nohup mc mirror --watch cluster2/dest cluster1/src > ./mirror.log 2>&1 &
+
