@@ -119,3 +119,4 @@ sudo systemctl start minio
 https://minio1.example.com:9001
 
 (I worked first on one machine then I cloned the machine to have in total 3 machines))
+

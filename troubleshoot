@@ -68,3 +68,7 @@ mc alias set cluster1 http://minio1.smartek.ae:9000 admin minioadmin
 mc admin info cluster1
 mc version enable cluster1/src
 mc version enable cluster2/dest
+
+
+mc alias set minio https://bastion.smartek.ae:443 admin minioadmin --insecure
+mc admin info minio --insecure

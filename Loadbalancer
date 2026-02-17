@@ -49,4 +49,55 @@ backend minio_console_backend
 (this configuration needs a Global Load Balancer or smart DNS for health checks or it wont work as expected)
 (this configuration is not configured with multiple URLs as mentioned in the Doc.)
 ========================================================================================================
+(this is a working config with multiple URLs)
 
+global
+    log /dev/log    local0
+    log /dev/log    local1 notice
+    maxconn 4096
+    user haproxy
+    group haproxy
+    daemon
+
+defaults
+    log     global
+    mode    http
+    option  httplog
+    option  http-server-close
+    option  forwardfor
+    timeout connect 5000ms
+    timeout client  50000ms
+    timeout server  50000ms
+    timeout http-request 5m
+
+
+frontend https_front
+    bind *:443 ssl crt /etc/haproxy/certs/minio.pem alpn h2,http/1.1
+    
+    acl host_minio hdr(host) -i bastion.smartek.ae
+    acl host_console hdr(host) -i console.smartek.ae
+
+    use_backend minio_api if host_minio
+    use_backend minio_console if host_console
+
+
+backend minio_api
+    mode http
+    balance roundrobin
+
+    server minio1 minio1.smartek.ae:9000 check
+    server minio2 minio2.smartek.ae:9000 check
+#    server minio3 minio3.smartek.ae:9000 check
+
+backend minio_console
+    mode http
+    balance roundrobin
+
+    option httpchk GET /minio/health/live
+    http-check expect status 200
+
+    server minio1 minio1.smartek.ae:9001 check
+    server minio2 minio2.smartek.ae:9001 check
+ #   server minio3 minio3.smartek.ae:9001 check
+
+(tcp check enabled only for minio_api backend because /minio/health/live is not returning 200 for API)
