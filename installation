@@ -5,6 +5,7 @@ on all nodes:
 192.168.122.11 minio1.smartek.ae
 192.168.122.13 minio3.smartek.ae
 192.168.122.12 minio2.smartek.ae
+192.168.122.55 bastion.smartek.ae console.smartek.ae
 
 
 
